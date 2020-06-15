@@ -1,5 +1,5 @@
-Role Name
-=========
+Ansible Role - Prometheus Node Exportner
+========================================
 
 This Ansible role is useful in installing and configuring prometheus node exporter.
 
