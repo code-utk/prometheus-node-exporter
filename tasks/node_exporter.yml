@@ -1,0 +1,55 @@
+---
+#Tasks file for Node Exporter
+
+- name: Installing required packages
+  yum:
+          name: "{{item}}"
+          state: latest
+          update_cache: yes
+  with_items:
+          - wget
+
+- name: Creating a Group - nodeexporter
+  group:
+          name: nodeexporter
+          state: present
+            
+- name: Creating a no-home User - node_exporter
+  user:
+          name: nodeexporter
+          createhome: no
+          group: nodeexporter
+
+- name: Install prometheus Node exporter
+  unarchive:
+          src: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+          dest: /tmp/
+          remote_src: yes
+
+- name: Copy Prometheus node exporter file to bin
+  copy:
+          src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
+          dest: "/usr/local/bin/node_exporter"
+          owner: nodeexporter
+          group: nodeexporter
+          remote_src: yes
+          mode: 0755
+
+- name: Delete node exporter tmp folder
+  file:
+          path: '/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64'
+          state: absent
+
+- name: Copying Promethus Config file
+  copy:
+          src: node_exporter.service
+          dest: /etc/systemd/system/node_exporter.service
+          owner: nodeexporter
+          group: nodeexporter
+
+- name: Configure systemd to use service
+  systemd:
+          daemon_reload: yes
+          enabled: yes
+          state: started
+          name: node_exporter

@@ -1,0 +1,6 @@
+---
+# defaults file for node_exporter
+
+#You can refer to https://github.com/prometheus/node_exporter/releases/ for the latest version
+node_exporter_version: 1.0.0
+

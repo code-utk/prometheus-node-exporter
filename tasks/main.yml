@@ -1,0 +1,4 @@
+---
+# tasks file for node_exporter
+
+- include_tasks: node_exporter.yml
